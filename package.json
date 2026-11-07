@@ -1,7 +1,7 @@
 {
   "name": "antigravity-rtl",
-  "version": "1.4.1",
-  "description": "A smart RTL (Right-to-Left) patcher with UI settings for Antigravity & Antigravity IDE.",
+  "version": "1.5.0",
+  "description": "Smart RTL (Right-to-Left) UI patcher and Web Patcher for Antigravity & Antigravity IDE with Hebrew, Arabic, and bilingual typography support.",
   "main": "./bin/index.js",
   "scripts": {
     "test": "node --test",
@@ -11,19 +11,29 @@
   "keywords": [
     "antigravity",
     "rtl",
-    "persian",
-    "arabic",
     "hebrew",
+    "arabic",
+    "bidi",
     "patcher",
     "electron",
     "asar"
   ],
-  "author": "mmnaderi",
+  "author": "sdoolman <https://github.com/sdoolman>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sdoolman/antigravity-rtl.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sdoolman/antigravity-rtl/issues"
+  },
+  "homepage": "https://github.com/sdoolman/antigravity-rtl#readme",
   "files": [
     "bin",
     "extension",
-    "README.md"
+    "web",
+    "README.md",
+    "LICENSE"
   ],
   "dependencies": {
     "@electron/asar": "^4.2.0",

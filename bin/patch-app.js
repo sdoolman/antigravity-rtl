@@ -153,13 +153,11 @@ export async function patchApp(asarPath, { exitOnError = true } = {}) {
         asar.extractAll(asarPath, extractDir);
 
         const utilsPath = path.join(extractDir, 'dist', 'utils.js');
-        const fontDest = path.join(extractDir, 'dist', 'Vazirmatn-Variable.woff2');
 
         if (repairBackup) {
             failLabel = 'Failed to rebuild clean backup.';
             spinner.text = 'Rebuilding clean backup...';
             fs.writeFileSync(utilsPath, cleanUtils);
-            fs.rmSync(fontDest, { force: true });
             await asar.createPackage(extractDir, backupPath);
             asar.uncache(backupPath);
         }
@@ -178,8 +176,6 @@ export async function patchApp(asarPath, { exitOnError = true } = {}) {
         // Force-enable DevTools in packaged app
         utilsCode = utilsCode.replace(/devTools:\s*!electron_1?\.app\.isPackaged/g, 'devTools: true');
         fs.writeFileSync(utilsPath, utilsCode);
-
-        fs.copyFileSync(path.join(__dirname, 'Vazirmatn-Variable.woff2'), fontDest);
 
         failLabel = 'Failed to repack ASAR.';
         spinner.text = 'Repacking app.asar (almost done)...';

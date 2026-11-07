@@ -33,9 +33,6 @@ test('patcher-engine: web patcher patches, updates, and restores app.asar correc
     assert.ok(extractedUtils.includes(PATCH_START));
     assert.ok(extractedUtils.includes('devTools: true'));
 
-    const extractedFont = asar.extractFile(patchedPath, 'dist/Vazirmatn-Variable.woff2');
-    assert.ok(extractedFont.length > 50000); // Vazirmatn font is present
-
     // Re-patch (update)
     const { asar: rePatchedBuf, wasAlreadyPatched: wasPatchedSecondTime } = patchAsar(patchedBuf);
     assert.equal(wasPatchedSecondTime, true);

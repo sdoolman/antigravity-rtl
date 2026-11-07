@@ -32,7 +32,7 @@ test('asar-engine: parses real ASAR, replaces a file, appends a new file, and ve
 
     const repackedBytes = patchAndPackAsar(parsed, {
         'dist/utils.js': newUtilsContent,
-        'dist/Vazirmatn-Variable.woff2': newFontContent
+        'dist/custom-asset.bin': newFontContent
     });
 
     const repackedFile = path.join(tmpDir, 'repacked.asar');
@@ -46,6 +46,6 @@ test('asar-engine: parses real ASAR, replaces a file, appends a new file, and ve
     const extractedOther = asar.extractFile(repackedFile, 'dist/other.txt').toString('utf8');
     assert.equal(extractedOther, 'keep this untouched');
 
-    const extractedFont = asar.extractFile(repackedFile, 'dist/Vazirmatn-Variable.woff2');
-    assert.deepEqual(Array.from(extractedFont), [0x01, 0x02, 0x03, 0x04]);
+    const extractedAsset = asar.extractFile(repackedFile, 'dist/custom-asset.bin');
+    assert.deepEqual(Array.from(extractedAsset), [0x01, 0x02, 0x03, 0x04]);
 });

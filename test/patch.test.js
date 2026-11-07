@@ -50,7 +50,7 @@ test('standalone app: payload runs, and unsafe config values never reach the pag
 
     process.env.HOME = process.env.USERPROFILE = root;
     const configPath = path.join(root, '.antigravity-rtl.json');
-    fs.writeFileSync(configPath, JSON.stringify({ faFont: '"><img src=x onerror=alert(1)>', enFont: 'Vazirmatn' }));
+    fs.writeFileSync(configPath, JSON.stringify({ faFont: '"><img src=x onerror=alert(1)>', enFont: 'Heebo' }));
 
     const handlers = {};
     let pageScript;
@@ -69,13 +69,13 @@ test('standalone app: payload runs, and unsafe config values never reach the pag
     handlers['dom-ready']();
     assert.doesNotThrow(() => new vm.Script(pageScript), 'page script must be valid JavaScript');
     assert.ok(pageScript.includes('window.__antigravityRtlCore'));
-    assert.ok(pageScript.includes('"enFont":"Vazirmatn"'));
+    assert.ok(pageScript.includes('"enFont":"Heebo"'));
     assert.ok(!pageScript.includes('onerror=alert'));
 
     handlers['console-message']({}, 0, 'SAVE_RTL_CONFIG|{"fs":"18"}');
     const saved = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     assert.equal(saved.fs, '18');
-    assert.equal(saved.enFont, 'Vazirmatn');
+    assert.equal(saved.enFont, 'Heebo');
 });
 
 test('IDE: a patched main.js is never backed up, so restore removes the hook', async () => {

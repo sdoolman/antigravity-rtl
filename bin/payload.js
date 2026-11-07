@@ -30,8 +30,6 @@ win.webContents.on('console-message', (event, ...args) => {
             return;
         }
         try {
-            const fontPath = require('path').join(__dirname, 'Vazirmatn-Variable.woff2');
-            const fontBase64 = require('fs').readFileSync(fontPath).toString('base64');
             // Read config
             let rtlConfig = { faFont: '', enFont: '', codeFont: '', lh: '1.6', fs: '16', isRTL: true, forceRTL: false };
             try {
@@ -66,7 +64,6 @@ win.webContents.on('console-message', (event, ...args) => {
                 }
 
                 function init() {
-                    const fontBase64 = '${fontBase64}';
                 const rtlConfig = ${JSON.stringify(rtlConfig)};
                 
                 // 2. Observer Logic
@@ -278,22 +275,21 @@ win.webContents.on('console-message', (event, ...args) => {
                 
                 const updateDynamicCSS = (faFont, enFont, codeFont, lh, fs) => {
                     let faFontRule = '';
-                    let faFontName = "'PersianOnlyFont'";
+                    let faFontName = "'SystemRTLFont'";
                     
                     if (faFont) {
-                        faFontName = "'UserPersianFont', 'PersianOnlyFont'";
-                        // Remove '-Regular' or ' Regular' if user typed it, to find the base family name
+                        faFontName = "'UserRTLFont', 'SystemRTLFont'";
                         let baseFaFont = faFont.replace(/[-\\s]?Regular$/i, '');
                         
                         faFontRule = \`
                             @font-face {
-                                font-family: 'UserPersianFont';
+                                font-family: 'UserRTLFont';
                                 src: local('\${faFont}'), local('\${baseFaFont}');
                                 font-weight: 400;
                                 unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
                             }
                             @font-face {
-                                font-family: 'UserPersianFont';
+                                font-family: 'UserRTLFont';
                                 src: local('\${baseFaFont} Bold'), local('\${baseFaFont}-Bold'), local('\${baseFaFont}Bold');
                                 font-weight: 700;
                                 unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
@@ -322,15 +318,9 @@ win.webContents.on('console-message', (event, ...args) => {
                     rtlStyle.textContent = \`
                         \${faFontRule}
                         @font-face {
-                            font-family: 'PersianOnlyFont';
-                            src: url('data:font/woff2;base64,\${fontBase64}') format('woff2');
-                            font-weight: 100 900;
+                            font-family: 'SystemRTLFont';
+                            src: local('Heebo'), local('Assistant'), local('Rubik'), local('Segoe UI'), local('Arial'), local('Tahoma'), sans-serif;
                             unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
-                        }
-                        @font-face {
-                            font-family: 'SystemHebrewFont';
-                            src: local('Heebo'), local('Assistant'), local('Rubik'), local('Segoe UI'), local('Arial');
-                            unicode-range: U+0590-05FF, U+FB1D-FB4F;
                         }
                         :root, :host, html, body {
                             font-family: \${faFontName}, \${enFontStr}, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
@@ -519,11 +509,10 @@ win.webContents.on('console-message', (event, ...args) => {
                     <!-- Grouped Settings -->
                     <div id="rtl-settings-wrapper" class="flex flex-col gap-1.5 transition-all duration-300 \${isRTL ? '' : 'opacity-40 pointer-events-none'}">
                       
-                      <!-- Persian Font -->
-                      <!-- Tooltip example if needed later: <span class="font-medium text-xs opacity-80 whitespace-nowrap cursor-help" data-rtl-tooltip="Fallback: Vazirmatn">FA/AR Font</span> -->
+                      <!-- RTL Font -->
                       <div class="flex items-center justify-between gap-2 px-1 h-7">
-                        <span class="font-medium text-xs opacity-80 whitespace-nowrap">FA/AR Font</span>
-                        <input id="rtl-fafont-input" type="text" placeholder="Default: Vazirmatn" class="rtl-theme-input placeholder:text-placeholder focus:!outline-none focus:!ring-0 transition-all !border !border-border !bg-muted disabled:opacity-50 !shadow-none w-28" style="font-size: 12px; border-radius: 4px; padding: 4px 8px;">
+                        <span class="font-medium text-xs opacity-80 whitespace-nowrap">RTL Font</span>
+                        <input id="rtl-fafont-input" type="text" placeholder="System (Heebo, etc.)" class="rtl-theme-input placeholder:text-placeholder focus:!outline-none focus:!ring-0 transition-all !border !border-border !bg-muted disabled:opacity-50 !shadow-none w-28" style="font-size: 12px; border-radius: 4px; padding: 4px 8px;">
                       </div>
                       
                       <!-- English Font -->

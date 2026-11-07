@@ -1,30 +1,11 @@
 import { parseAsar, extractFileBytes, patchAndPackAsar } from './asar-engine.js';
 import {
     RTL_PAYLOAD,
-    VAZIRMATN_FONT_BASE64,
     ANCHOR,
     PATCH_START,
     PATCH_END,
     PATCH_BLOCK
 } from './payload-bundle.js';
-
-/**
- * Decodes base64 string to Uint8Array in browser and Node environments.
- * @param {string} b64
- * @returns {Uint8Array}
- */
-export function base64ToUint8Array(b64) {
-    if (typeof Buffer !== 'undefined') {
-        return new Uint8Array(Buffer.from(b64, 'base64'));
-    }
-    const binStr = atob(b64);
-    const len = binStr.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-        bytes[i] = binStr.charCodeAt(i);
-    }
-    return bytes;
-}
 
 /**
  * Strips the RTL patch block from utils.js source code.
@@ -80,11 +61,9 @@ export function patchAsar(asarBuffer) {
     utilsCode = utilsCode.replace(/devTools:\s*!electron_1?\.app\.isPackaged/g, 'devTools: true');
 
     const newUtilsBytes = new TextEncoder().encode(utilsCode);
-    const fontBytes = base64ToUint8Array(VAZIRMATN_FONT_BASE64);
 
     const patchedAsar = patchAndPackAsar(parsed, {
-        'dist/utils.js': newUtilsBytes,
-        'dist/Vazirmatn-Variable.woff2': fontBytes
+        'dist/utils.js': newUtilsBytes
     });
 
     return {

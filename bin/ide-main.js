@@ -20,15 +20,6 @@ function log(...args) {
     } catch (e) {}
 }
 
-let cachedFontBase64 = null;
-function getFontBase64() {
-    if (cachedFontBase64 === null) {
-        const fontPath = path.join(__dirname, 'Vazirmatn-Variable.woff2');
-        cachedFontBase64 = fs.existsSync(fontPath) ? fs.readFileSync(fontPath).toString('base64') : '';
-    }
-    return cachedFontBase64;
-}
-
 app.on('browser-window-created', (_event, win) => {
     // 1. Listen for console messages to save settings
     win.webContents.on('console-message', (_e, ...args) => {
@@ -66,8 +57,6 @@ app.on('browser-window-created', (_event, win) => {
                 return;
             }
 
-            const fontBase64 = getFontBase64();
-
             // Read user config
             let rtlConfig = {
                 faFont: '',
@@ -81,7 +70,6 @@ app.on('browser-window-created', (_event, win) => {
             if (fs.existsSync(CONFIG_FILE)) {
                 try {
                     const parsed = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
-                    // Any page in the window can write this file via the console; these values reach CSS.
                     for (const k of ['faFont', 'enFont', 'codeFont', 'lh', 'fs']) {
                         if (typeof parsed[k] !== 'string' || !/^[\p{L}\p{N} ._-]{0,64}$/u.test(parsed[k])) delete parsed[k];
                     }
@@ -94,7 +82,6 @@ app.on('browser-window-created', (_event, win) => {
             if (fs.existsSync(clientPath)) {
                 let clientCode = fs.readFileSync(clientPath, 'utf8');
                 clientCode = clientCode
-                    .replaceAll('__FONT_BASE64__', fontBase64)
                     .replaceAll('__RTL_CONFIG__', () => JSON.stringify(rtlConfig));
 
                 await win.webContents.executeJavaScript(clientCode);

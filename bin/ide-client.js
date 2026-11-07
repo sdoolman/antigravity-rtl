@@ -8,7 +8,6 @@
         window.__antigravity_rtl_injected = true;
 
 
-        const fontBase64 = '__FONT_BASE64__';
         const rtlConfig = __RTL_CONFIG__;
 
         // In-memory reactive state
@@ -61,20 +60,20 @@
             disabledStyle.textContent = '';
 
             let faFontRule = '';
-            let faFontName = "'PersianOnlyFont'";
+            let faFontName = "'SystemRTLFont'";
 
             if (state.faFont) {
-                faFontName = "'UserPersianFont', 'PersianOnlyFont'";
+                faFontName = "'UserRTLFont', 'SystemRTLFont'";
                 const baseFaFont = state.faFont.replace(/[-\s]?Regular$/i, '');
                 faFontRule = `
                     @font-face {
-                        font-family: 'UserPersianFont';
+                        font-family: 'UserRTLFont';
                         src: local('${state.faFont}'), local('${baseFaFont}');
                         font-weight: 400;
                         unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
                     }
                     @font-face {
-                        font-family: 'UserPersianFont';
+                        font-family: 'UserRTLFont';
                         src: local('${baseFaFont} Bold'), local('${baseFaFont}-Bold'), local('${baseFaFont}Bold');
                         font-weight: 700;
                         unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
@@ -83,7 +82,7 @@
             }
 
             const enFontStr = state.enFont ? `'${state.enFont}', ui-sans-serif, system-ui, sans-serif` : 'ui-sans-serif, system-ui, sans-serif';
-            const fontStack = `${faFontName}, 'SystemHebrewFont', ${enFontStr}, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`;
+            const fontStack = `${faFontName}, ${enFontStr}, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`;
             const codeFontRule = state.codeFont ? `font-family: '${state.codeFont}', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;` : '';
 
             const forceRtlStyle = state.forceRTL ? `
@@ -105,16 +104,9 @@
             rtlStyle.textContent = `
                 ${faFontRule}
                 @font-face {
-                    font-family: 'PersianOnlyFont';
-                    src: local('Vazirmatn'), local('Vazirmatn Variable'), local('Vazir'),
-                         url('data:font/woff2;base64,${fontBase64}') format('woff2');
-                    font-weight: 100 900;
+                    font-family: 'SystemRTLFont';
+                    src: local('Heebo'), local('Assistant'), local('Rubik'), local('Segoe UI'), local('Arial'), local('Tahoma'), sans-serif;
                     unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
-                }
-                @font-face {
-                    font-family: 'SystemHebrewFont';
-                    src: local('Heebo'), local('Assistant'), local('Rubik'), local('Segoe UI'), local('Arial');
-                    unicode-range: U+0590-05FF, U+FB1D-FB4F;
                 }
 
                 :root {
@@ -338,10 +330,10 @@
 
             const inputStyle = 'width:140px;padding:4px 8px;font-size:11px;border-radius:5px;border:1px solid var(--vscode-input-border,#334155);background:var(--vscode-input-background,#0f172a);color:var(--vscode-input-foreground,#f3f4f6);outline:none;box-sizing:border-box;';
 
-            // FA Font
-            const faInput = el('input', inputStyle, null, { id: 'rtl-panel-fa-font', type: 'text', placeholder: 'Default: Vazirmatn', value: state.faFont });
+            // RTL Font
+            const faInput = el('input', inputStyle, null, { id: 'rtl-panel-fa-font', type: 'text', placeholder: 'System (Heebo, etc.)', value: state.faFont });
             panelBody.appendChild(el('div', 'display:flex;align-items:center;justify-content:space-between;gap:8px;', [
-                el('span', 'font-size:11px;white-space:nowrap;', 'FA Font', { title: 'Persian/Arabic Font' }),
+                el('span', 'font-size:11px;white-space:nowrap;', 'RTL Font', { title: 'Hebrew & RTL Font' }),
                 faInput
             ]));
 
