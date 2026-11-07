@@ -11,7 +11,7 @@ Read and write naturally in Hebrew and RTL languages without disrupting English 
 [![TypeScript](https://img.shields.io/badge/TypeScript-Checked-3178C6.svg)](tsconfig.json)
 [![Web Patcher](https://img.shields.io/badge/Web%20Patcher-Live%20on%20GitHub%20Pages-2ea44f.svg)](https://sdoolman.github.io/antigravity-rtl/web/)
 
-[🚀 Launch Web Patcher](https://sdoolman.github.io/antigravity-rtl/web/) · [CLI Install](#-option-2-cli-terminal) · [CLI Flags](#cli-options--flags) · [Uninstall](#uninstall--restore) · [License](#license)
+[🚀 Open Live Web Patcher](https://sdoolman.github.io/antigravity-rtl/web/) · [CLI Install](#-option-2-cli-terminal) · [CLI Flags](#cli-options--flags) · [Uninstall](#uninstall--restore) · [License](#license)
 
 </div>
 
@@ -19,38 +19,31 @@ Read and write naturally in Hebrew and RTL languages without disrupting English 
 
 ## ✨ Features
 
-- **Full Hebrew & BiDi Support**: First-class handling of Hebrew text mixed with English, numbers, version strings, currency, and punctuation.
-- **Code & Terminal LTR Isolation**: Monaco editor, terminal, backticks, and inline code blocks remain strictly Left-to-Right (`unicode-bidi: isolate`).
-- **Zero-Install Web Patcher**: Patch your `app.asar` directly inside Chrome/Edge using the native File System Access API — zero terminal commands, zero Node.js installation, 100% private in browser memory.
-- **Hosted on GitHub Pages**: Available out-of-the-box at [sdoolman.github.io/antigravity-rtl](https://sdoolman.github.io/antigravity-rtl/).
-- **Supports Both Apps**: Auto-detects and patches **Antigravity (Standalone Desktop App)** and **Antigravity IDE** (VS Code Edition).
+- **Full Hebrew & BiDi Support**: First-class detection and alignment for Hebrew mixed with English words, digits, version numbers, percentages, currency (`₪`), and punctuation.
+- **Code & Terminal LTR Isolation**: Monaco editor, terminal, backticks, and inline code blocks remain strictly Left-to-Right (`unicode-bidi: isolate !important`).
+- **Zero-Install Web Patcher**: Patch your `app.asar` directly inside Chrome/Edge using the native File System Access API — zero terminal commands, zero Node.js installation, 100% private in local browser memory.
+- **Hosted Live on GitHub Pages**: Available out-of-the-box at [sdoolman.github.io/antigravity-rtl/web/](https://sdoolman.github.io/antigravity-rtl/web/).
+- **Dual App Support**: Auto-detects and patches both **Antigravity (Standalone Desktop App)** and **Antigravity IDE** (VS Code Edition).
 - **Clean & Debloated**: Zero nagware popups, zero network telemetry, zero foreign prompts, zero bloat.
-- **Native System Typography**: Optimized for modern Hebrew system fonts (**Heebo**, **Assistant**, **Rubik**, **Segoe UI**, **Arial**) with live typography sliders for font size and line height.
+- **Native System Typography**: Defaulted to modern Hebrew system fonts (**Heebo**, **Assistant**, **Rubik**, **Segoe UI**, **Arial**) with live typography controls for font size and line height.
 - **Quick Keyboard Shortcut**: Toggle RTL on the fly with `Alt+R` (Windows/Linux) or `⌥R` (macOS).
 
 ---
 
 ## 🚀 Installation
 
-### 🌐 Option 1: Zero-Install Web Patcher (Out of the Box)
+### 🌐 Option 1: Zero-Install Web Patcher (Recommended)
 
 If you prefer not to install Node.js, npm, or run terminal commands:
 
-1. Open the **[Live Web Patcher](https://sdoolman.github.io/antigravity-rtl/web/)** directly in your browser.
+1. Open the **[Live Web Patcher](https://sdoolman.github.io/antigravity-rtl/web/)** in Chrome, Edge, or Brave.
 2. Click **Select `app.asar`** (or drag and drop it into the window).
 3. The browser patches your file 100% locally in browser memory in under a second (zero uploads, completely private).
 
-*(You can also host it locally by opening `web/index.html` or deploy it to Cloudflare via `wrangler.toml`).*
-
-#### Default `app.asar` paths:
+#### Default `app.asar` locations:
 - **Windows**: `%LOCALAPPDATA%\Programs\antigravity\resources\app.asar`
 - **macOS**: `/Applications/Antigravity.app/Contents/Resources/app.asar`
 - **Linux**: `/opt/Antigravity/resources/app.asar`
-
-> **Deploy your own Web Patcher to Cloudflare:**
-> ```bash
-> npx wrangler deploy
-> ```
 
 ---
 
@@ -58,36 +51,38 @@ If you prefer not to install Node.js, npm, or run terminal commands:
 
 > **Before running the patch:** Close Antigravity and Antigravity IDE if open.
 
+Run the clean, debloated fork directly from GitHub:
+
 #### macOS
 ```bash
-npx antigravity-rtl
+npx github:sdoolman/antigravity-rtl
 ```
 *(If you encounter permission issues, grant App Management to your terminal in **System Settings → Privacy & Security → App Management**).*
 
 #### Linux
 ```bash
-sudo npx antigravity-rtl
+sudo npx github:sdoolman/antigravity-rtl
 ```
 
 #### Windows (PowerShell as Administrator)
 ```powershell
-npx antigravity-rtl
+npx github:sdoolman/antigravity-rtl
 ```
 
 ---
 
 ## ⚙️ CLI Options & Flags
 
-| Flag | Description |
+| Command / Flag | Description |
 | :--- | :--- |
-| `npx antigravity-rtl` | **Auto-detect & patch**: Patches both Antigravity & Antigravity IDE if detected |
-| `npx antigravity-rtl --app` | Patch Antigravity Standalone Desktop App only |
-| `npx antigravity-rtl --ide` | Patch Antigravity IDE only |
-| `npx antigravity-rtl --restore` | Revert changes and restore original clean backups for all apps |
-| `npx antigravity-rtl --restore --app` | Revert Standalone App only |
-| `npx antigravity-rtl --restore --ide` | Revert Antigravity IDE only |
-| `npx antigravity-rtl --path "/path/to/app"` | Specify a custom path to `app.asar` or IDE installation directory |
-| `npx antigravity-rtl --browser` | Generates unpacked Chrome/Arc browser extension for remote control mode |
+| `npx github:sdoolman/antigravity-rtl` | **Auto-detect & patch**: Patches both Antigravity & Antigravity IDE if detected |
+| `npx github:sdoolman/antigravity-rtl --app` | Patch Antigravity Standalone Desktop App only |
+| `npx github:sdoolman/antigravity-rtl --ide` | Patch Antigravity IDE only |
+| `npx github:sdoolman/antigravity-rtl --restore` | Revert changes and restore original clean backups for all apps |
+| `npx github:sdoolman/antigravity-rtl --restore --app` | Revert Standalone App only |
+| `npx github:sdoolman/antigravity-rtl --restore --ide` | Revert Antigravity IDE only |
+| `npx github:sdoolman/antigravity-rtl --path "/path/to/app"` | Specify a custom path to `app.asar` or IDE installation directory |
+| `npx github:sdoolman/antigravity-rtl --browser` | Generates unpacked Chrome/Arc browser extension for remote control mode |
 
 ---
 
@@ -96,20 +91,20 @@ npx antigravity-rtl
 To completely remove the patch and revert to your original, clean application files:
 
 ```bash
-npx antigravity-rtl --restore
+npx github:sdoolman/antigravity-rtl --restore
 ```
 
 Or for a specific version:
 ```bash
-npx antigravity-rtl --restore --app
-npx antigravity-rtl --restore --ide
+npx github:sdoolman/antigravity-rtl --restore --app
+npx github:sdoolman/antigravity-rtl --restore --ide
 ```
 
 ---
 
 ## 🛠️ Development & Testing
 
-All tests use Node.js's native test runner (`node --test`) and TypeScript static checking:
+All tests use Node.js's native test runner (`node --test`) and TypeScript static checking with zero build overhead:
 
 ```bash
 # Run test suite (12 tests covering ASAR engine, BiDi detector, and patchers)
