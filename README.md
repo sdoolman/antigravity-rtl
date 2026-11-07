@@ -9,9 +9,9 @@ Read and write naturally in Hebrew and RTL languages without disrupting English 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22.12-brightgreen.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Checked-3178C6.svg)](tsconfig.json)
-[![Web Patcher](https://img.shields.io/badge/Web%20Patcher-Live%20on%20GitHub%20Pages-2ea44f.svg)](https://sdoolman.github.io/antigravity-rtl/web/)
+[![Web Patcher](https://img.shields.io/badge/Web%20Patcher-Live%20on%20GitHub%20Pages-2ea44f.svg)](https://sdoolman.github.io/antigravity-rtl/)
 
-[🚀 Open Live Web Patcher](https://sdoolman.github.io/antigravity-rtl/web/) · [CLI Install](#-option-2-cli-terminal) · [CLI Flags](#cli-options--flags) · [Uninstall](#uninstall--restore) · [License](#license)
+[🚀 Open Live Web Patcher](https://sdoolman.github.io/antigravity-rtl/) · [CLI Install](#-option-2-cli-terminal) · [CLI Flags](#cli-options--flags) · [Uninstall](#uninstall--restore) · [License](#license)
 
 </div>
 
@@ -22,7 +22,7 @@ Read and write naturally in Hebrew and RTL languages without disrupting English 
 - **Full Hebrew & BiDi Support**: First-class detection and alignment for Hebrew mixed with English words, digits, version numbers, percentages, currency (`₪`), and punctuation.
 - **Code & Terminal LTR Isolation**: Monaco editor, terminal, backticks, and inline code blocks remain strictly Left-to-Right (`unicode-bidi: isolate !important`).
 - **Zero-Install Web Patcher**: Patch your `app.asar` directly inside Chrome/Edge using the native File System Access API — zero terminal commands, zero Node.js installation, 100% private in local browser memory.
-- **Hosted Live on GitHub Pages**: Available out-of-the-box at [sdoolman.github.io/antigravity-rtl/web/](https://sdoolman.github.io/antigravity-rtl/web/).
+- **Hosted Live on GitHub Pages**: Available out-of-the-box at [sdoolman.github.io/antigravity-rtl](https://sdoolman.github.io/antigravity-rtl/).
 - **Dual App Support**: Auto-detects and patches both **Antigravity (Standalone Desktop App)** and **Antigravity IDE** (VS Code Edition).
 - **Clean & Debloated**: Zero nagware popups, zero network telemetry, zero foreign prompts, zero bloat.
 - **Native System Typography**: Defaulted to modern Hebrew system fonts (**Heebo**, **Assistant**, **Rubik**, **Segoe UI**, **Arial**) with live typography controls for font size and line height.
@@ -36,7 +36,7 @@ Read and write naturally in Hebrew and RTL languages without disrupting English 
 
 If you prefer not to install Node.js, npm, or run terminal commands:
 
-1. Open the **[Live Web Patcher](https://sdoolman.github.io/antigravity-rtl/web/)** in Chrome, Edge, or Brave.
+1. Open the **[Live Web Patcher](https://sdoolman.github.io/antigravity-rtl/)** in Chrome, Edge, or Brave.
 2. Click **Select `app.asar`** (or drag and drop it into the window).
 3. The browser patches your file 100% locally in browser memory in under a second (zero uploads, completely private).
 
