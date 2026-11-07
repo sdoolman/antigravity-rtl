@@ -49,6 +49,16 @@ function getAppCandidatePaths() {
         candidates.push('/opt/antigravity/resources/app.asar');
         candidates.push('/usr/share/antigravity/resources/app.asar');
         candidates.push(path.join(os.homedir(), '.local', 'share', 'antigravity', 'resources', 'app.asar'));
+        if (process.env.WSL_DISTRO_NAME || fs.existsSync('/mnt/c/Users')) {
+            try {
+                const users = fs.readdirSync('/mnt/c/Users');
+                for (const u of users) {
+                    candidates.push(`/mnt/c/Users/${u}/AppData/Local/Programs/antigravity/resources/app.asar`);
+                    candidates.push(`/mnt/c/Users/${u}/AppData/Local/Programs/Antigravity/resources/app.asar`);
+                    candidates.push(`/mnt/c/Users/${u}/AppData/Local/Antigravity/resources/app.asar`);
+                }
+            } catch (_) {}
+        }
     }
     return candidates;
 }

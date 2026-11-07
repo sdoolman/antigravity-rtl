@@ -372,11 +372,6 @@
 
             panel.appendChild(panelBody);
 
-            // 4. Footer
-            const footerLink = el('a', 'font-size:10px;color:var(--vscode-textLink-foreground,#38bdf8);text-decoration:none;opacity:0.8;', '★ Star Antigravity RTL on GitHub', { href: 'https://github.com/mmnaderi/antigravity-rtl', target: '_blank' });
-            const footer = el('div', 'margin-top:10px;padding-top:8px;border-top:1px solid var(--vscode-widget-border,rgba(255,255,255,0.1));text-align:center;', [footerLink]);
-            panel.appendChild(footer);
-
             document.body.appendChild(panel);
 
             // Bind events

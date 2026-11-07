@@ -55,6 +55,16 @@ function getIdeCandidatePaths() {
         candidates.push('/usr/share/antigravity');
         candidates.push('/usr/share/antigravity-ide');
         candidates.push(path.join(os.homedir(), '.local', 'share', 'antigravity-ide'));
+        if (process.env.WSL_DISTRO_NAME || fs.existsSync('/mnt/c/Users')) {
+            try {
+                const users = fs.readdirSync('/mnt/c/Users');
+                for (const u of users) {
+                    candidates.push(`/mnt/c/Users/${u}/AppData/Local/Programs/Antigravity IDE`);
+                    candidates.push(`/mnt/c/Users/${u}/AppData/Local/Programs/antigravity-ide`);
+                    candidates.push(`/mnt/c/Users/${u}/AppData/Local/Antigravity IDE`);
+                }
+            } catch (_) {}
+        }
     }
 
     return candidates;
