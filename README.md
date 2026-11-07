@@ -9,9 +9,9 @@ Read and write naturally in Hebrew and RTL languages without disrupting English 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22.12-brightgreen.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Checked-3178C6.svg)](tsconfig.json)
-[![Cloudflare Ready](https://img.shields.io/badge/Cloudflare-Worker%20%2F%20Pages-F38020.svg)](wrangler.toml)
+[![Web Patcher](https://img.shields.io/badge/Web%20Patcher-Live%20on%20GitHub%20Pages-2ea44f.svg)](https://sdoolman.github.io/antigravity-rtl/)
 
-[Web Patcher](#-option-1-zero-install-web-patcher) · [CLI Install](#-option-2-cli-terminal) · [CLI Flags](#cli-options--flags) · [Uninstall](#uninstall--restore) · [License](#license)
+[🚀 Launch Web Patcher](https://sdoolman.github.io/antigravity-rtl/) · [CLI Install](#-option-2-cli-terminal) · [CLI Flags](#cli-options--flags) · [Uninstall](#uninstall--restore) · [License](#license)
 
 </div>
 
@@ -22,7 +22,7 @@ Read and write naturally in Hebrew and RTL languages without disrupting English 
 - **Full Hebrew & BiDi Support**: First-class handling of Hebrew text mixed with English, numbers, version strings, currency, and punctuation.
 - **Code & Terminal LTR Isolation**: Monaco editor, terminal, backticks, and inline code blocks remain strictly Left-to-Right (`unicode-bidi: isolate`).
 - **Zero-Install Web Patcher**: Patch your `app.asar` directly inside Chrome/Edge using the native File System Access API — zero terminal commands, zero Node.js installation, 100% private in browser memory.
-- **Deploy to Cloudflare**: Ready to deploy as a Cloudflare Worker or Cloudflare Pages static web app (`npx wrangler deploy`).
+- **Hosted on GitHub Pages**: Available out-of-the-box at [sdoolman.github.io/antigravity-rtl](https://sdoolman.github.io/antigravity-rtl/).
 - **Supports Both Apps**: Auto-detects and patches **Antigravity (Standalone Desktop App)** and **Antigravity IDE** (VS Code Edition).
 - **Clean & Debloated**: Zero nagware popups, zero network telemetry, zero foreign prompts, zero bloat.
 - **Native System Typography**: Optimized for modern Hebrew system fonts (**Heebo**, **Assistant**, **Rubik**, **Segoe UI**, **Arial**) with live typography sliders for font size and line height.
@@ -32,13 +32,15 @@ Read and write naturally in Hebrew and RTL languages without disrupting English 
 
 ## 🚀 Installation
 
-### 🌐 Option 1: Zero-Install Web Patcher
+### 🌐 Option 1: Zero-Install Web Patcher (Out of the Box)
 
 If you prefer not to install Node.js, npm, or run terminal commands:
 
-1. Open [`web/index.html`](web/index.html) in your browser (or your deployed Cloudflare Worker).
+1. Open the **[Live Web Patcher](https://sdoolman.github.io/antigravity-rtl/)** directly in your browser.
 2. Click **Select `app.asar`** (or drag and drop it into the window).
 3. The browser patches your file 100% locally in browser memory in under a second (zero uploads, completely private).
+
+*(You can also host it locally by opening `web/index.html` or deploy it to Cloudflare via `wrangler.toml`).*
 
 #### Default `app.asar` paths:
 - **Windows**: `%LOCALAPPDATA%\Programs\antigravity\resources\app.asar`
