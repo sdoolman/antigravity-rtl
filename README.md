@@ -9,9 +9,9 @@ Read and write naturally in Hebrew and RTL languages without disrupting English 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D22.12-brightgreen.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Checked-3178C6.svg)](tsconfig.json)
-[![Web Patcher](https://img.shields.io/badge/Web%20Patcher-Live%20on%20GitHub%20Pages-2ea44f.svg)](https://sdoolman.github.io/antigravity-rtl/)
+[![Web Patcher](https://img.shields.io/badge/Web%20Patcher-Live%20on%20GitHub%20Pages-2ea44f.svg)](https://sdoolman.github.io/antigravity-rtl/web/)
 
-[🚀 Launch Web Patcher](https://sdoolman.github.io/antigravity-rtl/) · [CLI Install](#-option-2-cli-terminal) · [CLI Flags](#cli-options--flags) · [Uninstall](#uninstall--restore) · [License](#license)
+[🚀 Launch Web Patcher](https://sdoolman.github.io/antigravity-rtl/web/) · [CLI Install](#-option-2-cli-terminal) · [CLI Flags](#cli-options--flags) · [Uninstall](#uninstall--restore) · [License](#license)
 
 </div>
 
@@ -36,7 +36,7 @@ Read and write naturally in Hebrew and RTL languages without disrupting English 
 
 If you prefer not to install Node.js, npm, or run terminal commands:
 
-1. Open the **[Live Web Patcher](https://sdoolman.github.io/antigravity-rtl/)** directly in your browser.
+1. Open the **[Live Web Patcher](https://sdoolman.github.io/antigravity-rtl/web/)** directly in your browser.
 2. Click **Select `app.asar`** (or drag and drop it into the window).
 3. The browser patches your file 100% locally in browser memory in under a second (zero uploads, completely private).
 
