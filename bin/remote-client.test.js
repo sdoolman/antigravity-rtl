@@ -153,5 +153,5 @@ assert.equal(heTickers.getAttribute('dir'), 'rtl');
 assert.equal(pre.getAttribute('dir'), null);
 assert.equal(document.getElementById('antigravity-rtl-float-btn').textContent, 'RTL');
 assert.match(document.getElementById('antigravity-rtl-style').textContent, /unicode-bidi:\s*plaintext/);
-assert.match(document.getElementById('antigravity-rtl-style').textContent, /chrome-extension:\/\/ext-test\/Vazirmatn-Variable\.woff2/);
+assert.match(document.getElementById('antigravity-rtl-style').textContent, /font-family:\s*'RTLFont'/);
 console.log('remote-client checks passed');

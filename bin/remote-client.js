@@ -38,18 +38,12 @@
         const font = chrome.runtime.getURL('Vazirmatn-Variable.woff2');
         style.textContent = isRTL ? `
             @font-face {
-                font-family: 'PersianOnlyFont';
-                src: local('Vazirmatn'), url('${font}') format('woff2');
-                font-weight: 100 900;
+                font-family: 'RTLFont';
+                src: local('Heebo'), local('Assistant'), local('Rubik'), local('Segoe UI'), local('Arial'), local('Tahoma'), sans-serif;
                 unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
             }
-            @font-face {
-                font-family: 'HebrewFont';
-                src: local('Heebo'), local('Assistant'), local('Rubik'), local('Segoe UI'), local('Arial');
-                unicode-range: U+0590-05FF, U+FB1D-FB4F;
-            }
             ${BLOCKS}, ${INPUTS} {
-                font-family: 'PersianOnlyFont', 'HebrewFont', ui-sans-serif, system-ui, sans-serif !important;
+                font-family: 'RTLFont', ui-sans-serif, system-ui, sans-serif !important;
                 unicode-bidi: plaintext;
                 text-align: start;
             }

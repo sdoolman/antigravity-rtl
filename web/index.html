@@ -117,11 +117,11 @@
       justify-content: center;
       gap: 0.5rem;
       font-weight: 600;
-      padding: 0.75rem 1.5rem;
+      padding: 0.75rem 1.25rem;
       border-radius: 8px;
       border: none;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s;
       font-size: 0.95rem;
       text-decoration: none;
     }
@@ -138,6 +138,7 @@
     .btn-secondary {
       background: #1f293d;
       color: var(--text);
+      border: 1px solid var(--border);
     }
 
     .btn-secondary:hover {
@@ -167,6 +168,7 @@
       border-radius: 8px;
       font-size: 0.9rem;
       display: none;
+      line-height: 1.4;
     }
 
     .status-box.info {
@@ -185,6 +187,18 @@
       background: rgba(239, 68, 68, 0.1);
       border: 1px solid rgba(239, 68, 68, 0.3);
       color: var(--danger);
+    }
+
+    .folder-picker-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      background: rgba(31, 41, 61, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.85rem;
     }
 
     .paths-accordion {
@@ -253,18 +267,25 @@
 <body>
   <div class="container">
     <header>
-      <div class="badge">Zero Install · In-Browser ASAR Patcher</div>
+      <div class="badge">Zero Install · In-Browser Patcher</div>
       <h1>Antigravity RTL Patcher</h1>
-      <p class="subtitle">Read & write naturally in Hebrew, Arabic, and Persian without installing Node.js, npm, or WSL.</p>
+      <p class="subtitle">Supports Antigravity Desktop App, Antigravity IDE & Antigravity CLI Remote Web.</p>
     </header>
 
     <div class="card">
       <div class="drop-zone" id="dropZone">
         <div class="drop-icon">📦</div>
         <div class="drop-text">Click or Drop <code>app.asar</code> here</div>
-        <div class="drop-sub">File is patched 100% locally in your browser memory</div>
+        <div class="drop-sub">Patches Desktop App (Windows, macOS, Linux) in local browser memory</div>
       </div>
-      <input type="file" id="fileInput" accept=".asar" style="display: none;">
+      <input type="file" id="fileInput" accept=".asar,.exe" style="display: none;">
+
+      <div class="folder-picker-bar">
+        <span>Have an installed folder with <code>Antigravity.exe</code> or IDE?</span>
+        <button class="btn btn-secondary" id="folderBtn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+          📂 Select Folder
+        </button>
+      </div>
 
       <div class="status-box" id="statusBox"></div>
 
@@ -275,17 +296,21 @@
       </div>
 
       <div class="paths-accordion">
-        <div class="path-label">Default app.asar locations on your system:</div>
+        <div class="path-label">Default locations on your system:</div>
         <div class="code-box">
-          <span><strong>Windows:</strong> %LOCALAPPDATA%\Programs\antigravity\resources\app.asar</span>
+          <span><strong>Windows App / exe:</strong> %LOCALAPPDATA%\Programs\antigravity\resources\app.asar</span>
           <button class="copy-btn" onclick="copyPath('%LOCALAPPDATA%\\Programs\\antigravity\\resources\\app.asar')">Copy</button>
         </div>
         <div class="code-box">
-          <span><strong>macOS:</strong> /Applications/Antigravity.app/Contents/Resources/app.asar</span>
+          <span><strong>Antigravity IDE:</strong> %LOCALAPPDATA%\Programs\Antigravity IDE</span>
+          <button class="copy-btn" onclick="copyPath('%LOCALAPPDATA%\\Programs\\Antigravity IDE')">Copy</button>
+        </div>
+        <div class="code-box">
+          <span><strong>macOS App:</strong> /Applications/Antigravity.app/Contents/Resources/app.asar</span>
           <button class="copy-btn" onclick="copyPath('/Applications/Antigravity.app/Contents/Resources/app.asar')">Copy</button>
         </div>
         <div class="code-box">
-          <span><strong>Linux:</strong> /opt/Antigravity/resources/app.asar</span>
+          <span><strong>Linux App:</strong> /opt/Antigravity/resources/app.asar</span>
           <button class="copy-btn" onclick="copyPath('/opt/Antigravity/resources/app.asar')">Copy</button>
         </div>
       </div>
@@ -293,19 +318,23 @@
 
     <div class="privacy-notice">
       <svg viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-      100% Private & Client-side. Your app.asar never leaves your machine.
+      100% Private & Client-side. Your files never leave your machine.
     </div>
   </div>
 
   <script type="module">
     import { patchAsar, restoreAsar, isAsarPatched } from './patcher-engine.js';
+    import { patchIdeDirectory, restoreIdeDirectory, isIdePatched } from './ide-patcher.js';
 
     let currentFileBuffer = null;
     let currentFileName = 'app.asar';
     let fileHandle = null;
+    let activeDirectoryHandle = null;
+    let activeTargetType = 'app'; // 'app' or 'ide'
 
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
+    const folderBtn = document.getElementById('folderBtn');
     const statusBox = document.getElementById('statusBox');
     const actionsPanel = document.getElementById('actionsPanel');
     const patchBtn = document.getElementById('patchBtn');
@@ -318,19 +347,25 @@
     };
 
     function showStatus(msg, type = 'info') {
-      statusBox.textContent = msg;
+      statusBox.innerHTML = msg;
       statusBox.className = `status-box ${type}`;
       statusBox.style.display = 'block';
     }
 
+    // 1. ASAR File Picker
     dropZone.addEventListener('click', async () => {
       if ('showOpenFilePicker' in window) {
         try {
           const [handle] = await window.showOpenFilePicker({
-            types: [{ description: 'Electron ASAR Archive', accept: { 'application/octet-stream': ['.asar'] } }]
+            types: [{ description: 'Antigravity app.asar', accept: { 'application/octet-stream': ['.asar', '.exe'] } }]
           });
-          fileHandle = handle;
           const file = await handle.getFile();
+          if (file.name.toLowerCase().endsWith('.exe')) {
+            showStatus('Antigravity.exe is the launcher executable. Please click <strong>"Select Folder"</strong> below to select your Antigravity installation folder, or pick <code>resources/app.asar</code> inside it.', 'info');
+            return;
+          }
+          fileHandle = handle;
+          activeDirectoryHandle = null;
           await loadFile(file);
         } catch (e) {
           if (e.name !== 'AbortError') showStatus(e.message, 'error');
@@ -340,25 +375,108 @@
       }
     });
 
+    // 2. Folder Picker (Direct in-place patcher for App or IDE)
+    folderBtn.addEventListener('click', async () => {
+      if (!('showDirectoryPicker' in window)) {
+        showStatus('Directory Picker is supported in Chrome, Edge, and Brave. Please use "Click or Drop app.asar" above.', 'error');
+        return;
+      }
+      try {
+        const dirHandle = await window.showDirectoryPicker();
+        showStatus(`Scanning selected folder "${dirHandle.name}"...`, 'info');
+
+        // Check for Antigravity Standalone App (contains resources/app.asar or Antigravity.exe)
+        let asarHandle = null;
+        try {
+          const resDir = await dirHandle.getDirectoryHandle('resources');
+          asarHandle = await resDir.getFileHandle('app.asar');
+        } catch (_) {}
+
+        if (!asarHandle && dirHandle.name.toLowerCase() === 'resources') {
+          try { asarHandle = await dirHandle.getFileHandle('app.asar'); } catch (_) {}
+        }
+
+        if (asarHandle) {
+          activeTargetType = 'app';
+          fileHandle = asarHandle;
+          activeDirectoryHandle = null;
+          const file = await asarHandle.getFile();
+          await loadFile(file);
+          showStatus(`✔ Detected Antigravity Desktop App in <code>${dirHandle.name}</code>. Ready to patch!`, 'info');
+          return;
+        }
+
+        // Check for Antigravity IDE (out/main.js)
+        let outDirHandle = null;
+        try {
+          outDirHandle = await dirHandle.getDirectoryHandle('out');
+        } catch (_) {
+          if (dirHandle.name.toLowerCase() === 'out') outDirHandle = dirHandle;
+        }
+
+        if (outDirHandle) {
+          try {
+            await outDirHandle.getFileHandle('main.js');
+            activeTargetType = 'ide';
+            activeDirectoryHandle = outDirHandle;
+            fileHandle = null;
+            currentFileBuffer = null;
+
+            const isPatched = await isIdePatched(outDirHandle);
+            actionsPanel.style.display = 'flex';
+            downloadBtn.style.display = 'none';
+
+            if (isPatched) {
+              showStatus(`✔ Detected Antigravity IDE in <code>${dirHandle.name}</code> — Already Patched!`, 'info');
+              patchBtn.textContent = '⚡ Update IDE RTL Patch';
+              restoreBtn.style.display = 'inline-flex';
+            } else {
+              showStatus(`✔ Detected Antigravity IDE in <code>${dirHandle.name}</code> — Ready to patch!`, 'info');
+              patchBtn.textContent = '✨ Apply IDE RTL Patch';
+              restoreBtn.style.display = 'none';
+            }
+            return;
+          } catch (_) {}
+        }
+
+        showStatus(`Could not find <code>resources/app.asar</code> or <code>out/main.js</code> in "${dirHandle.name}". Please select the root Antigravity or Antigravity IDE directory.`, 'error');
+      } catch (e) {
+        if (e.name !== 'AbortError') showStatus(e.message, 'error');
+      }
+    });
+
     dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
     dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
     dropZone.addEventListener('drop', async (e) => {
       e.preventDefault();
       dropZone.classList.remove('dragover');
       if (e.dataTransfer.files.length) {
+        const file = e.dataTransfer.files[0];
+        if (file.name.toLowerCase().endsWith('.exe')) {
+          showStatus('Antigravity.exe is the launcher executable. Please click <strong>"Select Folder"</strong> below to select your Antigravity installation folder, or drop <code>resources/app.asar</code>.', 'info');
+          return;
+        }
         fileHandle = null;
-        await loadFile(e.dataTransfer.files[0]);
+        activeDirectoryHandle = null;
+        await loadFile(file);
       }
     });
 
     fileInput.addEventListener('change', async (e) => {
       if (e.target.files.length) {
+        const file = e.target.files[0];
+        if (file.name.toLowerCase().endsWith('.exe')) {
+          showStatus('Antigravity.exe is the launcher executable. Please click <strong>"Select Folder"</strong> below to select your Antigravity installation folder, or drop <code>resources/app.asar</code>.', 'info');
+          return;
+        }
         fileHandle = null;
-        await loadFile(e.target.files[0]);
+        activeDirectoryHandle = null;
+        await loadFile(file);
       }
     });
 
     async function loadFile(file) {
+      activeTargetType = 'app';
       currentFileName = file.name;
       showStatus('Reading ASAR archive into local memory...', 'info');
       const arrayBuffer = await file.arrayBuffer();
@@ -370,7 +488,7 @@
         downloadBtn.style.display = 'none';
 
         if (isPatched) {
-          showStatus(`Loaded "${file.name}" (${(file.size / 1024 / 1024).toFixed(1)} MB) — Already Patched! You can update the patch or revert to original.`, 'info');
+          showStatus(`Loaded "${file.name}" (${(file.size / 1024 / 1024).toFixed(1)} MB) — Already Patched!`, 'info');
           patchBtn.textContent = '⚡ Update RTL Patch';
           restoreBtn.style.display = 'inline-flex';
         } else {
@@ -385,6 +503,21 @@
     }
 
     patchBtn.addEventListener('click', async () => {
+      // 1. IDE Directory target
+      if (activeTargetType === 'ide' && activeDirectoryHandle) {
+        showStatus('Patching Antigravity IDE directly in-place...', 'info');
+        try {
+          await patchIdeDirectory(activeDirectoryHandle);
+          showStatus('🎉 Successfully patched Antigravity IDE in-place! Restart your IDE to see the changes.', 'success');
+          patchBtn.textContent = '⚡ Update IDE RTL Patch';
+          restoreBtn.style.display = 'inline-flex';
+        } catch (e) {
+          showStatus('Failed to patch IDE: ' + e.message, 'error');
+        }
+        return;
+      }
+
+      // 2. Standalone App ASAR target
       if (!currentFileBuffer) return;
       showStatus('Patching ASAR with RTL engine & Hebrew typography...', 'info');
       try {
@@ -397,10 +530,10 @@
             await writable.write(patchedAsar);
             await writable.close();
             showStatus('🎉 Successfully patched and saved directly in-place! Restart Antigravity to enjoy RTL.', 'success');
+            patchBtn.textContent = '⚡ Update RTL Patch';
+            restoreBtn.style.display = 'inline-flex';
             return;
-          } catch (_) {
-            // If in-place write fails (e.g. system permissions), offer download
-          }
+          } catch (_) {}
         }
 
         offerDownload(patchedAsar, currentFileName);
@@ -411,6 +544,21 @@
     });
 
     restoreBtn.addEventListener('click', async () => {
+      // 1. IDE Directory target
+      if (activeTargetType === 'ide' && activeDirectoryHandle) {
+        showStatus('Restoring original Antigravity IDE files...', 'info');
+        try {
+          await restoreIdeDirectory(activeDirectoryHandle);
+          showStatus('✔ Successfully restored original Antigravity IDE! Restart your IDE.', 'success');
+          restoreBtn.style.display = 'none';
+          patchBtn.textContent = '✨ Apply IDE RTL Patch';
+        } catch (e) {
+          showStatus('Failed to restore IDE: ' + e.message, 'error');
+        }
+        return;
+      }
+
+      // 2. Standalone App ASAR target
       if (!currentFileBuffer) return;
       showStatus('Reverting ASAR back to clean state...', 'info');
       try {

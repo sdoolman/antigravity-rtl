@@ -1,0 +1,64 @@
+name: Upstream Compatibility Canary
+
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Every Monday at 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: 'canary'
+  cancel-in-progress: true
+
+jobs:
+  canary-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run complete test suite
+        run: npm test
+
+      - name: Run TypeScript typecheck
+        run: npm run typecheck
+
+      - name: Build Web Patcher bundle
+        run: npm run build:web
+
+      - name: Check Upstream Anchor & Release Resiliency
+        run: |
+          echo "Verifying Antigravity Standalone App & IDE injection patterns..."
+          node -e "
+            import('./web/payload-bundle.js').then((bundle) => {
+              const { ANCHOR, IDE_HOOK, RTL_PAYLOAD, IDE_CLIENT_CODE } = bundle;
+              if (!ANCHOR || !IDE_HOOK || !RTL_PAYLOAD || !IDE_CLIENT_CODE) {
+                console.error('Critical: Bundle missing core hooks');
+                process.exit(1);
+              }
+              console.log('✔ Canary patterns and payloads verified successfully.');
+            });
+          "
+
+      - name: Report Failure on Alert
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🚨 Canary Alert: Antigravity Compatibility Check Failed',
+              body: `The scheduled upstream compatibility canary failed on run ${context.runId}.\n\nPlease inspect the logs: https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+            });
