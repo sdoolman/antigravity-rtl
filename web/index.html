@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antigravity RTL — Web Patcher (Zero Install)</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --border: #1f293d;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 1rem;
+    }
+
+    .container {
+      max-width: 680px;
+      width: 100%;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #ffffff 40%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      margin-bottom: 1.5rem;
+    }
+
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: rgba(17, 24, 39, 0.5);
+    }
+
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .drop-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .drop-text {
+      font-weight: 600;
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .drop-sub {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #030712;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: #1f293d;
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: #2d3b55;
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.25);
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+      flex-wrap: wrap;
+    }
+
+    .status-box {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .status-box.info {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent);
+    }
+
+    .status-box.success {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: var(--success);
+    }
+
+    .status-box.error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--danger);
+    }
+
+    .paths-accordion {
+      margin-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      padding-top: 1.25rem;
+    }
+
+    .path-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .code-box {
+      background: #0b0f19;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.6rem 0.8rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      background: transparent;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-left: 0.5rem;
+    }
+
+    .copy-btn:hover {
+      background: rgba(56, 189, 248, 0.15);
+    }
+
+    .privacy-notice {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 1.5rem;
+      text-align: center;
+      justify-content: center;
+    }
+
+    .privacy-notice svg {
+      width: 14px;
+      height: 14px;
+      fill: var(--success);
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">Zero Install · In-Browser ASAR Patcher</div>
+      <h1>Antigravity RTL Patcher</h1>
+      <p class="subtitle">Read & write naturally in Hebrew, Arabic, and Persian without installing Node.js, npm, or WSL.</p>
+    </header>
+
+    <div class="card">
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-icon">📦</div>
+        <div class="drop-text">Click or Drop <code>app.asar</code> here</div>
+        <div class="drop-sub">File is patched 100% locally in your browser memory</div>
+      </div>
+      <input type="file" id="fileInput" accept=".asar" style="display: none;">
+
+      <div class="status-box" id="statusBox"></div>
+
+      <div class="actions" id="actionsPanel" style="display: none;">
+        <button class="btn btn-primary" id="patchBtn">✨ Apply RTL Patch</button>
+        <button class="btn btn-danger" id="restoreBtn" style="display: none;">↺ Revert to Original</button>
+        <button class="btn btn-secondary" id="downloadBtn" style="display: none;">⬇ Download app.asar</button>
+      </div>
+
+      <div class="paths-accordion">
+        <div class="path-label">Default app.asar locations on your system:</div>
+        <div class="code-box">
+          <span><strong>Windows:</strong> %LOCALAPPDATA%\Programs\antigravity\resources\app.asar</span>
+          <button class="copy-btn" onclick="copyPath('%LOCALAPPDATA%\\Programs\\antigravity\\resources\\app.asar')">Copy</button>
+        </div>
+        <div class="code-box">
+          <span><strong>macOS:</strong> /Applications/Antigravity.app/Contents/Resources/app.asar</span>
+          <button class="copy-btn" onclick="copyPath('/Applications/Antigravity.app/Contents/Resources/app.asar')">Copy</button>
+        </div>
+        <div class="code-box">
+          <span><strong>Linux:</strong> /opt/Antigravity/resources/app.asar</span>
+          <button class="copy-btn" onclick="copyPath('/opt/Antigravity/resources/app.asar')">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="privacy-notice">
+      <svg viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+      100% Private & Client-side. Your app.asar never leaves your machine.
+    </div>
+  </div>
+
+  <script type="module">
+    import { patchAsar, restoreAsar, isAsarPatched } from './patcher-engine.js';
+
+    let currentFileBuffer = null;
+    let currentFileName = 'app.asar';
+    let fileHandle = null;
+
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const statusBox = document.getElementById('statusBox');
+    const actionsPanel = document.getElementById('actionsPanel');
+    const patchBtn = document.getElementById('patchBtn');
+    const restoreBtn = document.getElementById('restoreBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    window.copyPath = function(text) {
+      navigator.clipboard.writeText(text);
+      showStatus('Path copied to clipboard!', 'info');
+    };
+
+    function showStatus(msg, type = 'info') {
+      statusBox.textContent = msg;
+      statusBox.className = `status-box ${type}`;
+      statusBox.style.display = 'block';
+    }
+
+    dropZone.addEventListener('click', async () => {
+      if ('showOpenFilePicker' in window) {
+        try {
+          const [handle] = await window.showOpenFilePicker({
+            types: [{ description: 'Electron ASAR Archive', accept: { 'application/octet-stream': ['.asar'] } }]
+          });
+          fileHandle = handle;
+          const file = await handle.getFile();
+          await loadFile(file);
+        } catch (e) {
+          if (e.name !== 'AbortError') showStatus(e.message, 'error');
+        }
+      } else {
+        fileInput.click();
+      }
+    });
+
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+    dropZone.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) {
+        fileHandle = null;
+        await loadFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    fileInput.addEventListener('change', async (e) => {
+      if (e.target.files.length) {
+        fileHandle = null;
+        await loadFile(e.target.files[0]);
+      }
+    });
+
+    async function loadFile(file) {
+      currentFileName = file.name;
+      showStatus('Reading ASAR archive into local memory...', 'info');
+      const arrayBuffer = await file.arrayBuffer();
+      currentFileBuffer = new Uint8Array(arrayBuffer);
+
+      try {
+        const isPatched = isAsarPatched(currentFileBuffer);
+        actionsPanel.style.display = 'flex';
+        downloadBtn.style.display = 'none';
+
+        if (isPatched) {
+          showStatus(`Loaded "${file.name}" (${(file.size / 1024 / 1024).toFixed(1)} MB) — Already Patched! You can update the patch or revert to original.`, 'info');
+          patchBtn.textContent = '⚡ Update RTL Patch';
+          restoreBtn.style.display = 'inline-flex';
+        } else {
+          showStatus(`Loaded "${file.name}" (${(file.size / 1024 / 1024).toFixed(1)} MB) — Clean Original Antigravity. Ready to patch!`, 'info');
+          patchBtn.textContent = '✨ Apply RTL Patch';
+          restoreBtn.style.display = 'none';
+        }
+      } catch (err) {
+        showStatus('Error reading ASAR: ' + err.message, 'error');
+        actionsPanel.style.display = 'none';
+      }
+    }
+
+    patchBtn.addEventListener('click', async () => {
+      if (!currentFileBuffer) return;
+      showStatus('Patching ASAR with RTL engine & Hebrew typography...', 'info');
+      try {
+        const { asar: patchedAsar } = patchAsar(currentFileBuffer);
+        currentFileBuffer = patchedAsar;
+
+        if (fileHandle) {
+          try {
+            const writable = await fileHandle.createWritable();
+            await writable.write(patchedAsar);
+            await writable.close();
+            showStatus('🎉 Successfully patched and saved directly in-place! Restart Antigravity to enjoy RTL.', 'success');
+            return;
+          } catch (_) {
+            // If in-place write fails (e.g. system permissions), offer download
+          }
+        }
+
+        offerDownload(patchedAsar, currentFileName);
+        showStatus('🎉 Successfully patched! Save the downloaded file to your Antigravity resources folder and restart.', 'success');
+      } catch (e) {
+        showStatus('Failed to patch ASAR: ' + e.message, 'error');
+      }
+    });
+
+    restoreBtn.addEventListener('click', async () => {
+      if (!currentFileBuffer) return;
+      showStatus('Reverting ASAR back to clean state...', 'info');
+      try {
+        const restoredAsar = restoreAsar(currentFileBuffer);
+        currentFileBuffer = restoredAsar;
+
+        if (fileHandle) {
+          try {
+            const writable = await fileHandle.createWritable();
+            await writable.write(restoredAsar);
+            await writable.close();
+            showStatus('✔ Successfully restored original app.asar in-place! Restart Antigravity.', 'success');
+            restoreBtn.style.display = 'none';
+            patchBtn.textContent = '✨ Apply RTL Patch';
+            return;
+          } catch (_) {}
+        }
+
+        offerDownload(restoredAsar, currentFileName);
+        showStatus('✔ Successfully reverted! Save the downloaded file to your Antigravity resources folder.', 'success');
+      } catch (e) {
+        showStatus('Failed to restore ASAR: ' + e.message, 'error');
+      }
+    });
+
+    function offerDownload(uint8Array, filename) {
+      const blob = new Blob([uint8Array], { type: 'application/octet-stream' });
+      const url = URL.createObjectURL(blob);
+      downloadBtn.style.display = 'inline-flex';
+      downloadBtn.onclick = () => {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+      };
+      downloadBtn.click();
+    }
+  </script>
+</body>
+</html>

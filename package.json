@@ -5,7 +5,8 @@
   "main": "./bin/index.js",
   "scripts": {
     "test": "node --test",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build:web": "node scripts/build-web.js"
   },
   "keywords": [
     "antigravity",

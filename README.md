@@ -38,6 +38,23 @@ Settings are saved in `~/.antigravity-rtl.json` and restored when you reopen the
 
 ## Install
 
+### 🌐 Option 1: Zero-Install Web Patcher (No Node.js Required)
+
+If you don't want to install Node.js or run terminal commands:
+
+1. Open `web/index.html` in your browser (or host it via Cloudflare Pages / Workers).
+2. Click **Select `app.asar`** or drag-and-drop your `app.asar` file.
+3. The browser patches your file 100% locally in browser memory in under a second (zero uploads, completely private).
+
+To deploy your own Web Patcher on Cloudflare Workers in one command:
+```bash
+npx wrangler deploy
+```
+
+---
+
+### 💻 Option 2: CLI (Terminal)
+
 Follow the steps for your operating system. Node.js **22.12 or newer** is required; you don't need to clone this repository.
 
 > **Before running the patch:** Close Antigravity / Antigravity IDE if open.
