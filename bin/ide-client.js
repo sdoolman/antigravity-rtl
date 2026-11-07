@@ -71,19 +71,19 @@
                         font-family: 'UserPersianFont';
                         src: local('${state.faFont}'), local('${baseFaFont}');
                         font-weight: 400;
-                        unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+                        unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
                     }
                     @font-face {
                         font-family: 'UserPersianFont';
                         src: local('${baseFaFont} Bold'), local('${baseFaFont}-Bold'), local('${baseFaFont}Bold');
                         font-weight: 700;
-                        unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+                        unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
                     }
                 `;
             }
 
             const enFontStr = state.enFont ? `'${state.enFont}', ui-sans-serif, system-ui, sans-serif` : 'ui-sans-serif, system-ui, sans-serif';
-            const fontStack = `${faFontName}, ${enFontStr}, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`;
+            const fontStack = `${faFontName}, 'SystemHebrewFont', ${enFontStr}, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`;
             const codeFontRule = state.codeFont ? `font-family: '${state.codeFont}', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;` : '';
 
             const forceRtlStyle = state.forceRTL ? `
@@ -109,7 +109,12 @@
                     src: local('Vazirmatn'), local('Vazirmatn Variable'), local('Vazir'),
                          url('data:font/woff2;base64,${fontBase64}') format('woff2');
                     font-weight: 100 900;
-                    unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+                    unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+                }
+                @font-face {
+                    font-family: 'SystemHebrewFont';
+                    src: local('Heebo'), local('Assistant'), local('Rubik'), local('Segoe UI'), local('Arial');
+                    unicode-range: U+0590-05FF, U+FB1D-FB4F;
                 }
 
                 :root {

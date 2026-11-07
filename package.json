@@ -4,7 +4,8 @@
   "description": "A smart RTL (Right-to-Left) patcher with UI settings for Antigravity & Antigravity IDE.",
   "main": "./bin/index.js",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [
     "antigravity",
@@ -32,5 +33,10 @@
   "type": "module",
   "bin": {
     "antigravity-rtl": "bin/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@types/prompts": "^2.4.9",
+    "typescript": "^7.0.2"
   }
 }

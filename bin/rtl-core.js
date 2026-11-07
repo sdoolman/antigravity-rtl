@@ -3,9 +3,9 @@
  * Injected before the standalone app payload (patch-app.js) and the IDE client (patch-ide.js).
  */
 window.__antigravityRtlCore = window.__antigravityRtlCore || (() => {
-    const ZERO_WIDTH = /[​-‏﻿]/g;
-    const STRONG_CHAR = /[A-Za-z؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]/;
-    const ARABIC_CHAR = /[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]/;
+    const ZERO_WIDTH = /[\u200B-\u200F\uFEFF]/g;
+    const RTL_CHAR = /[\u0590-\u05FF\uFB1D-\uFB4F\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+    const STRONG_CHAR = /[A-Za-z\u0590-\u05FF\uFB1D-\uFB4F\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
     const BLOCKS = `
         .prose > *,
         [data-testid="chat-message"] > *,
@@ -26,10 +26,11 @@ window.__antigravityRtlCore = window.__antigravityRtlCore || (() => {
     // Sets dir on inputs and chat blocks from their first strong character.
     function updateDir(forceRTL) {
         document.querySelectorAll('[contenteditable="true"] p, [contenteditable="true"], textarea[data-testid="ask-question-writein"]').forEach(el => {
-            const raw = el.tagName === 'TEXTAREA' ? el.value : el.textContent;
+            const raw = el.tagName === 'TEXTAREA' ? /** @type {any} */ (el).value : el.textContent;
             const text = (raw || '').replace(ZERO_WIDTH, '').trim();
             if (text.length > 0) {
-                setDir(el, /^[^a-zA-Z]*[֑-߿יִ-﷽ﹰ-ﻼ]/.test(text) ? 'rtl' : 'ltr');
+                const firstStrong = text.match(STRONG_CHAR);
+                setDir(el, firstStrong && RTL_CHAR.test(firstStrong[0]) ? 'rtl' : 'ltr');
             } else if (el.hasAttribute('dir')) {
                 el.removeAttribute('dir');
             }
@@ -43,7 +44,7 @@ window.__antigravityRtlCore = window.__antigravityRtlCore || (() => {
                 dir = 'rtl';
             } else {
                 const firstChar = (el.textContent || '').replace(ZERO_WIDTH, '').match(STRONG_CHAR);
-                if (firstChar) dir = ARABIC_CHAR.test(firstChar[0]) ? 'rtl' : 'ltr';
+                if (firstChar) dir = RTL_CHAR.test(firstChar[0]) ? 'rtl' : 'ltr';
             }
             setDir(el, dir);
         });
@@ -62,7 +63,7 @@ window.__antigravityRtlCore = window.__antigravityRtlCore || (() => {
         document.body.addEventListener('input', schedule, { capture: true });
         document.body.addEventListener('focusin', schedule, { capture: true });
         new MutationObserver((mutations) => {
-            const hasExternal = mutations.some(m => [...m.addedNodes].some(node => !node.id || !node.id.startsWith('antigravity-rtl')));
+            const hasExternal = mutations.some(m => [...m.addedNodes].some(node => !('id' in node) || !node.id || !String(node.id).startsWith('antigravity-rtl')));
             if (hasExternal) schedule();
         }).observe(document.body, { childList: true, subtree: true });
     }

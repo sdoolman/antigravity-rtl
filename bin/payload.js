@@ -290,13 +290,13 @@ win.webContents.on('console-message', (event, ...args) => {
                                 font-family: 'UserPersianFont';
                                 src: local('\${faFont}'), local('\${baseFaFont}');
                                 font-weight: 400;
-                                unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+                                unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
                             }
                             @font-face {
                                 font-family: 'UserPersianFont';
                                 src: local('\${baseFaFont} Bold'), local('\${baseFaFont}-Bold'), local('\${baseFaFont}Bold');
                                 font-weight: 700;
-                                unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+                                unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
                             }
                         \`;
                     }
@@ -325,7 +325,12 @@ win.webContents.on('console-message', (event, ...args) => {
                             font-family: 'PersianOnlyFont';
                             src: url('data:font/woff2;base64,\${fontBase64}') format('woff2');
                             font-weight: 100 900;
-                            unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+                            unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+                        }
+                        @font-face {
+                            font-family: 'SystemHebrewFont';
+                            src: local('Heebo'), local('Assistant'), local('Rubik'), local('Segoe UI'), local('Arial');
+                            unicode-range: U+0590-05FF, U+FB1D-FB4F;
                         }
                         :root, :host, html, body {
                             font-family: \${faFontName}, \${enFontStr}, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
@@ -340,11 +345,28 @@ win.webContents.on('console-message', (event, ...args) => {
                         .prose, [data-testid="chat-message"], .markdown-body, .leading-relaxed, [contenteditable="true"], [contenteditable="true"] p {
                             font-size: \${fs}px !important;
                         }
+                        [dir="rtl"] {
+                            direction: rtl !important;
+                            text-align: right !important;
+                        }
+                        [dir="ltr"] {
+                            direction: ltr !important;
+                            text-align: left !important;
+                        }
+                        [dir="rtl"] p, [dir="rtl"] li, [dir="rtl"] span, [dir="rtl"] div {
+                            unicode-bidi: isolate;
+                        }
+                        pre, code, kbd, samp, .monaco-editor, .terminal,
+                        [dir="rtl"] pre, [dir="rtl"] code, [dir="rtl"] kbd, [dir="rtl"] samp,
+                        [dir="rtl"] pre *, [dir="rtl"] code * {
+                            direction: ltr !important;
+                            text-align: left !important;
+                            unicode-bidi: isolate !important;
+                        }
                         p, h1, h2, h3, h4, h5, h6, ul, ol {
-                            unicode-bidi: plaintext;
                             text-align: start;
                         }
-                        .prose > *, [data-testid="chat-message"] > *, .markdown-body > * {
+                        .prose > *:not([dir]), [data-testid="chat-message"] > *:not([dir]), .markdown-body > *:not([dir]) {
                             unicode-bidi: plaintext;
                             text-align: start;
                         }

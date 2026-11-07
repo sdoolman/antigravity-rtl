@@ -62,7 +62,7 @@ test('standalone app: payload runs, and unsafe config values never reach the pag
             executeJavaScript: (code) => { pageScript = code; return Promise.resolve(); }
         }
     };
-    const mod = { exports: {} };
+    const mod = { exports: /** @type {any} */ ({}) };
     new Function('module', 'require', '__dirname', readUtils(asarPath))(mod, createRequire(import.meta.url), BIN);
     mod.exports(win, 'http://127.0.0.1:4000/');
 

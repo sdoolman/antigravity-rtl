@@ -15,12 +15,15 @@
     style.id = 'antigravity-rtl-style';
     document.head.appendChild(style);
 
+    const RTL_CHAR = /[\u0590-\u05FF\uFB1D-\uFB4F\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+    const STRONG_CHAR = /[A-Za-z\u0590-\u05FF\uFB1D-\uFB4F\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+
     function textDir(text) {
         const clean = (text || '').replace(/[\u200B-\u200F\uFEFF]/g, '').trim();
         if (!clean) return null;
-        const first = clean.match(/[A-Za-z\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/);
+        const first = clean.match(STRONG_CHAR);
         if (!first) return 'auto';
-        return /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/.test(first[0]) ? 'rtl' : 'ltr';
+        return RTL_CHAR.test(first[0]) ? 'rtl' : 'ltr';
     }
 
     function setDir(el, dir) {
@@ -38,14 +41,27 @@
                 font-family: 'PersianOnlyFont';
                 src: local('Vazirmatn'), url('${font}') format('woff2');
                 font-weight: 100 900;
-                unicode-range: U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+                unicode-range: U+0590-05FF, U+FB1D-FB4F, U+0600-06FF, U+0750-077F, U+08A0-08FF, U+FB50-FDFF, U+FE70-FEFF;
+            }
+            @font-face {
+                font-family: 'HebrewFont';
+                src: local('Heebo'), local('Assistant'), local('Rubik'), local('Segoe UI'), local('Arial');
+                unicode-range: U+0590-05FF, U+FB1D-FB4F;
             }
             ${BLOCKS}, ${INPUTS} {
-                font-family: 'PersianOnlyFont', ui-sans-serif, system-ui, sans-serif !important;
+                font-family: 'PersianOnlyFont', 'HebrewFont', ui-sans-serif, system-ui, sans-serif !important;
                 unicode-bidi: plaintext;
                 text-align: start;
             }
-            pre, code, pre *, code * {
+            [dir="rtl"] {
+                direction: rtl !important;
+                text-align: right !important;
+            }
+            [dir="ltr"] {
+                direction: ltr !important;
+                text-align: left !important;
+            }
+            pre, code, pre *, code *, [dir="rtl"] pre, [dir="rtl"] code {
                 direction: ltr !important;
                 text-align: left !important;
                 unicode-bidi: isolate !important;
@@ -64,8 +80,8 @@
             const raw = el.tagName === 'TEXTAREA' ? el.value : el.textContent;
             const clean = (raw || '').replace(/[\u200B-\u200F\uFEFF]/g, '').trim();
             if (!isRTL || !clean) return setDir(el, null);
-            const rtl = /^[^a-zA-Z]*[\u0591-\u07FF\uFB1D-\uFDFD\uFE70-\uFEFC]/.test(clean);
-            setDir(el, rtl ? 'rtl' : 'ltr');
+            const first = clean.match(STRONG_CHAR);
+            setDir(el, first && RTL_CHAR.test(first[0]) ? 'rtl' : 'ltr');
         });
         document.querySelectorAll(BLOCKS).forEach(el => {
             if (el.tagName === 'PRE' || el.tagName === 'CODE') return;
