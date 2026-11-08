@@ -31,13 +31,13 @@ win.webContents.on('console-message', (event, ...args) => {
         }
         try {
             // Read config
-            let rtlConfig = { faFont: '', enFont: '', codeFont: '', lh: '1.6', fs: '16', isRTL: true, forceRTL: false };
+            let rtlConfig = { rtlFont: '', faFont: '', enFont: '', codeFont: '', lh: '1.6', fs: '16', isRTL: true, forceRTL: false };
             try {
                 const configPath = require('path').join(require('os').homedir(), '.antigravity-rtl.json');
                 if (require('fs').existsSync(configPath)) {
                     const cfg = JSON.parse(require('fs').readFileSync(configPath, 'utf8'));
                     // Any page in the window can write this file via the console; these values reach CSS.
-                    for (const k of ['faFont', 'enFont', 'codeFont', 'lh', 'fs']) {
+                    for (const k of ['rtlFont', 'faFont', 'enFont', 'codeFont', 'lh', 'fs']) {
                         if (typeof cfg[k] !== 'string' || !/^[\p{L}\p{N} ._-]{0,64}$/u.test(cfg[k])) delete cfg[k];
                     }
                     rtlConfig = { ...rtlConfig, ...cfg };
@@ -263,7 +263,7 @@ win.webContents.on('console-message', (event, ...args) => {
                     \`;
                     document.head.appendChild(widgetStyle);
                 }
-                const savedFaFont = rtlConfig.faFont || '';
+                const savedFaFont = rtlConfig.rtlFont || rtlConfig.faFont || '';
                 const savedEnFont = rtlConfig.enFont || '';
                 const savedCodeFont = rtlConfig.codeFont || '';
                 const savedLH = rtlConfig.lh || '1.6';
@@ -623,6 +623,7 @@ win.webContents.on('console-message', (event, ...args) => {
                 function saveConfig() {
                     try {
                         const cfgObj = {
+                            rtlFont: faFontInput.value.trim(),
                             faFont: faFontInput.value.trim(),
                             enFont: enFontInput.value.trim(),
                             codeFont: codeFontInput.value.trim(),

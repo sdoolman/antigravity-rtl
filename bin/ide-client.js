@@ -14,7 +14,8 @@
         const state = {
             isRTL: rtlConfig.isRTL !== false,
             forceRTL: Boolean(rtlConfig.forceRTL),
-            faFont: rtlConfig.faFont || '',
+            rtlFont: rtlConfig.rtlFont || rtlConfig.faFont || '',
+            faFont: rtlConfig.rtlFont || rtlConfig.faFont || '',
             enFont: rtlConfig.enFont || '',
             codeFont: rtlConfig.codeFont || '',
             lh: rtlConfig.lh || '1.6',
@@ -381,6 +382,7 @@
             });
 
             faInput.addEventListener('input', (e) => {
+                state.rtlFont = e.target.value.trim();
                 state.faFont = e.target.value.trim();
                 saveConfig();
                 updateDynamicCSS();

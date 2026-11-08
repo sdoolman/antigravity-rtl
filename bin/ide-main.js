@@ -59,6 +59,7 @@ app.on('browser-window-created', (_event, win) => {
 
             // Read user config
             let rtlConfig = {
+                rtlFont: '',
                 faFont: '',
                 enFont: '',
                 codeFont: '',
@@ -70,7 +71,7 @@ app.on('browser-window-created', (_event, win) => {
             if (fs.existsSync(CONFIG_FILE)) {
                 try {
                     const parsed = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
-                    for (const k of ['faFont', 'enFont', 'codeFont', 'lh', 'fs']) {
+                    for (const k of ['rtlFont', 'faFont', 'enFont', 'codeFont', 'lh', 'fs']) {
                         if (typeof parsed[k] !== 'string' || !/^[\p{L}\p{N} ._-]{0,64}$/u.test(parsed[k])) delete parsed[k];
                     }
                     rtlConfig = { ...rtlConfig, ...parsed };
